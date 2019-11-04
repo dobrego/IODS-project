@@ -1,13 +1,17 @@
 ---
-title: "IODS course project"
+title: "IOD course project"
+author: "Aleksandra Dobrego"
 output:
   html_document:
-    theme: cosmo
-    toc: true
-    toc_depth: 2
-    fig_caption: true
-    fig_width: 6
+    fig_caption: yes
     fig_height: 4
+    fig_width: 6
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
 ***
