@@ -1,4 +1,5 @@
 
 # About the project
-
-*Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you can use R Markdown syntax.*
+  
+Hi! I've used R before, but the first week has been great to repeat some syntax. I do expect to learn **Markdown** since it has been in my to-do list for years. This course was recommended to me by my doctoral school.  
+This is my [project](https://github.com/dobrego/IODS-project)
