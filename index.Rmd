@@ -1,6 +1,6 @@
 ---
 title: "IODS course project"
-author: "Aleksandra Dobrego "
+author: "Aleksandra Dobrego"
 output:
   html_document:
     fig_caption: yes
