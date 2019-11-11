@@ -388,30 +388,91 @@ summary {
 <div id="TOC">
 <ul>
 <li><a href="#about-the-project">About the project</a></li>
-<li><a href="#insert-chapter-2-title-here">Insert chapter 2 title here</a></li>
+<li><a href="#r-studio-exercise-2-part-2-analysis">R Studio Exercise 2: Part 2 (Analysis)</a></li>
 </ul>
 </div>
 
 <hr />
 <div id="about-the-project" class="section level1">
 <h1>About the project</h1>
-<<<<<<< HEAD
-<p>Hi! I’ve used R before, but the first week has been great to repeat some syntax. I do expect to learn <strong>Markdown</strong> since it has been in my to-do list for years. This course was recommended to me by my doctoral school. <a href="https://github.com/dobrego/IODS-project" class="uri">https://github.com/dobrego/IODS-project</a></p>
-=======
 <p>Hi! I’ve used R before, but the first week has been great to repeat some syntax. I do expect to learn <strong>Markdown</strong> since it has been in my to-do list for years. This course was recommended to me by my doctoral school.<br />
 This is my <a href="https://github.com/dobrego/IODS-project">project</a></p>
->>>>>>> 6d13b16b75790f4d5420dae30f7b5f11fa0e9613
 <hr />
 </div>
-<div id="insert-chapter-2-title-here" class="section level1">
-<h1>Insert chapter 2 title here</h1>
-<p><em>Describe the work you have done this week and summarize your learning.</em></p>
-<ul>
-<li>Describe your work and results clearly.</li>
-<li>Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.</li>
-<li>Assume the reader has no previous knowledge of your data or the more advanced methods you are using.</li>
-</ul>
+<div id="r-studio-exercise-2-part-2-analysis" class="section level1">
+<h1>R Studio Exercise 2: Part 2 (Analysis)</h1>
+<p><em>This week I’ve performed a data wrangling on a dataset, analyzed and interpreted my regression model and did some nice plots. I mark my code in italics.</em></p>
+<div id="looking-at-the-dataset" class="section level3">
+<h3><strong>1: Looking at the dataset</strong></h3>
+<p>Reading a file (see in IODS-project -&gt; data -&gt; learning2014.csv):<br />
+<em>my_learning &lt;- read.table(“learning2014.csv”)</em><br />
+Exploring structure and dimensions:<br />
+<em>str(my_learning)</em><br />
+We have numeric variables (deep = deep learning, stra = strategic learning, surf = surface learning), 3 integer variables (points, age, attitude) and 1 factor variable (gender).<br />
+Lets also look at dimensions:<br />
+<em>dim(my_learning)</em><br />
+<strong>Conclusion: the dataset has 166 observations and 7 variables.</strong></p>
+</div>
+<div id="graphs" class="section level3">
+<h3><strong>2: Graphs</strong></h3>
+<p>Attitude and Points coloured by gender:<br />
+<em>ggplot(my_learning, aes(x = Attitude, y = Points, col = gender)) + geom_point()</em><br />
+Summaries of variables: we have twice more males than females<br />
+<em>summary(my_learning)</em><br />
+Distribution of other variables:<br />
+<em>hist(my_learning$Age)</em><br />
+<em>hist(my_learning$Attitude)</em><br />
+<em>hist(my_learning$deep)</em><br />
+<em>hist(my_learning$stra)</em><br />
+<em>hist(my_learning$surf)</em><br />
+<em>hist(my_learning$Points)</em><br />
+Distribution of Attitude, surf and Points is normal.<br />
+Lets see relationship between variables:<br />
+<em>ggpairs(my_learning, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap(“facethist”, bins = 20)))</em><br />
+<strong>Conclusion on variables: correlation is actually very low for all variables, but the highest is for attitude&amp;points.</strong></p>
+</div>
+<div id="regression-model" class="section level3">
+<h3><strong>3: Regression model</strong></h3>
+<p>Now I do multiple regression model with attutude, strategic questions and deep learning questions; exam points is a dependent variable:<br />
+<em>model &lt;- lm(Points ~ Attitude + stra + deep, data = my_learning)</em><br />
+Summary of the model:<br />
+<em>summary(model)</em><br />
+Interpretation of model results and stats:<br />
+1. P value is very low, which means hat, at least, one of the predictor variables is significantly related to the outcome variable;<br />
+2. Only attitude can explain points well, that is, <strong>changes in attitude will affect points</strong>.<br />
+As others are not significating, we can remove them from the model:<br />
+<em>modelnostranodeep &lt;- lm(Points ~ Attitude, data = my_learning)</em><br />
+<em>summary(modelnostranodeep)</em><br />
+<strong>Conclusion: the best model is the last one (it minimizes the prediction errors = residuals).</strong></p>
+</div>
+<div id="explaining-the-multiple-regression-model" class="section level3">
+<h3><strong>4: Explaining the multiple regression model</strong></h3>
+<p>I am going back to the original model:<br />
+<em>model &lt;- lm(Points ~ Attitude + stra + deep, data = my_learning)</em><br />
+<em>summary(model)</em><br />
+Relationship between variables and the target (null hypothesis: actual value of Attitude is 0): only changes in attitude affect the exam points<br />
+Interpreting the multiple R-squared (correlation coefficient between observed values and predicted values):<br />
+Here <strong>R = 0.2097, which means that only 20% of of the variance in the points can be explained by chosen variables</strong>.</p>
+</div>
+<div id="model-plots" class="section level3">
+<h3><strong>5: Model plots</strong></h3>
+<p>So our model is:<br />
+<em>model &lt;- lm(Points ~ Attitude + stra + deep, data = my_learning)</em><br />
+First, plot of <strong>Residuals vs Fitted Values</strong>: used to explore whether errors depend on explanatory variables:<br />
+<em>plot(model, which = c(1))</em><br />
+Result: our resfit plot looks reasonable.<br />
+Second, <strong>normal QQplot</strong>: used to explore whether the errors are normally distributed:<br />
+<em>plot(model, which = c(2))</em><br />
+Result: our QQplot looks reasonable.<br />
+Third, plot of <strong>residuals vs leverage</strong>: identifies which observations have unusually high impact on the model:<br />
+<em>plot(model, which = c(5))</em><br />
+Result: our plot looks bad: there is an outlier and leverage is high.<br />
+<strong>Conclusion: we should remove outliers.</strong></p>
+</div>
+<div id="thank-you" class="section level3">
+<h3>Thank you!</h3>
 <hr />
+</div>
 </div>
 
 

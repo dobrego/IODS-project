@@ -1,7 +1,68 @@
-# Insert chapter 2 title here
+# R Studio Exercise 2: Part 2 (Analysis)
 
-*Describe the work you have done this week and summarize your learning.*
+*This week I've performed a data wrangling on a dataset, analyzed and interpreted my regression model and did some nice plots.  I mark my code in italics.*
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+### **1: Looking at the dataset**  
+Reading a file (see in IODS-project -> data -> learning2014.csv):  
+*my_learning <- read.table("learning2014.csv")*  
+Exploring structure and dimensions:  
+*str(my_learning)*  
+We have numeric variables (deep = deep learning, stra = strategic learning, surf = surface learning), 3 integer variables (points, age, attitude) and 1 factor variable (gender).  
+Lets also look at dimensions:  
+*dim(my_learning)*   
+**Conclusion: the dataset has 166 observations and 7 variables.**  
+
+### **2: Graphs**  
+Attitude and Points coloured by gender:  
+*ggplot(my_learning, aes(x = Attitude, y = Points, col = gender)) +
+  geom_point()*   
+Summaries of variables: we have twice more males than females  
+*summary(my_learning)*  
+Distribution of other variables:  
+*hist(my_learning\$Age)*  
+*hist(my_learning\$Attitude)*  
+*hist(my_learning\$deep)*  
+*hist(my_learning\$stra)*    
+*hist(my_learning\$surf)*  
+*hist(my_learning\$Points)*  
+Distribution of Attitude, surf and Points is normal.   
+Lets see relationship between variables:   
+*ggpairs(my_learning, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))*    
+**Conclusion on variables: correlation is actually very low for all variables, but the highest is for attitude&points.**  
+
+### **3: Regression model**
+Now I do multiple regression model with attutude, strategic questions and deep learning questions; exam points is a dependent variable:  
+*model <- lm(Points ~ Attitude + stra + deep, data = my_learning)*  
+Summary of the model:  
+*summary(model)*  
+Interpretation of model results and stats:  
+1. P value is very low, which means hat, at least, one of the predictor variables is significantly related to the outcome variable;  
+2. Only attitude can explain points well, that is, **changes in attitude will affect points**.  
+As others are not significating, we can remove them from the model:  
+*modelnostranodeep <- lm(Points ~ Attitude, data = my_learning)*  
+*summary(modelnostranodeep)*  
+**Conclusion: the best model is the last one (it minimizes the prediction errors = residuals).**  
+
+### **4: Explaining the multiple regression model**  
+I am going back to the original model:  
+*model <- lm(Points ~ Attitude + stra + deep, data = my_learning)*  
+*summary(model)*  
+Relationship between variables and the target (null hypothesis: actual value of Attitude is 0): only changes in attitude affect the exam points  
+Interpreting the multiple R-squared (correlation coefficient between observed values and predicted values):  
+Here **R = 0.2097, which means that only 20% of of the variance in the points can be explained by chosen variables**.
+
+### **5: Model plots**  
+So our model is:  
+*model <- lm(Points ~ Attitude + stra + deep, data = my_learning)*  
+First, plot of **Residuals vs Fitted Values**: used to explore whether errors depend on explanatory variables:  
+*plot(model, which = c(1))*  
+Result: our resfit plot looks reasonable.  
+Second, **normal QQplot**: used to explore whether the errors are normally distributed:  
+*plot(model, which = c(2))*  
+Result: our QQplot looks reasonable.  
+Third, plot of **residuals vs leverage**: identifies which observations have unusually high impact on the model:  
+*plot(model, which = c(5))*  
+Result: our plot looks bad: there is an outlier and leverage is high.  
+**Conclusion: we should remove outliers.**  
+
+### Thank you!  
