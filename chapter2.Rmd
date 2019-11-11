@@ -1,6 +1,6 @@
 # R Studio Exercise 2: Part 2 (Analysis)
 
-*This week I've performed a data wrangling on a dataset, analyzed and interpreted my regression model and did some nice plots.  I mark my code in italics.*
+*This week I have performed a data wrangling on a dataset, analyzed and interpreted my regression model and did some nice plots.  I mark my code in italics.*
 
 ### **1: Looking at the dataset**  
 Reading a file (see in IODS-project -> data -> learning2014.csv):  
