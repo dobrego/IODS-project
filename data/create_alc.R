@@ -5,6 +5,7 @@
 #all needed libraries
 library(dplyr)
 library(ggplot2)
+library(boot)
 
 #setting working directory to my data folder
 setwd("~/IODS-project/data")
@@ -46,5 +47,4 @@ joineddata <- mutate(joineddata, high_use = alc_use > 2)
 glimpse(joineddata)
 #saving the dataset
 write.table(joineddata, file = "joineddata.csv")
-
 

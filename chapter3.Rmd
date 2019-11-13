@@ -1,0 +1,208 @@
+# R Studio Exercise 3: Logistic regression
+
+*November 13, 2019*  
+*This week I have performed a data wrangling on a joined dataset and did logistic regression.*  
+
+### **Our dataset**  
+
+Reading a file and attaching the needed libraries (dplyr gives some little error but works fine):  
+```{r}
+setwd("~/IODS-project/data")
+library(ggplot2)
+library(dplyr)
+library(boot)
+joineddata <- read.table("joineddata.csv")
+```
+Printing out variable names:
+```{r}
+colnames(joineddata)
+```
+This is data from two questionnaires related to student performance (including alcohol consumption).  
+The dataset consists of 382 observations (rows) and 35 variables (columns).  
+
+### **Lets hypothesise**  
+
+1. Alcohol consumption and **gender** are related: males consume more alcohol, than females.
+2. Alcohol consumption and **first period grade** are related: greater first grade means less alcohol consumption for both genders.
+3. Alcohol consumption and **second period grade** are related: greater second grade means less alcohol consumption for both genders.
+4. Alcohol consumption and **third period grade** are related: greater third grade means less alcohol consumption for both genders.  
+
+### **Exploring the variables**  
+
+Before looking at variables, lets look at the alcohol consumption distribution:  
+```{r}
+plot(density(joineddata$alc_use), main = "Distribution of alcohol consumption")
+```  
+
+We can see that the consumption is mostly low across all dataframe.
+
+Now lets do some numerical exploration:  
+
+**Gender**
+```{r}
+summary(joineddata$sex)
+``` 
+
+We can see relatively equal amount of males and females.  
+
+**First period grades**
+```{r}
+summary(joineddata$G1)
+hist(joineddata$G1, main = "Distribution of first period grades", xlab = "Grade")
+``` 
+
+Distribution of first period grades is normal.  
+
+**Second period grades**
+```{r}
+summary(joineddata$G2)
+hist(joineddata$G2, main = "Distribution of second period grades", xlab = "Grade")
+``` 
+
+Distribution of second period grades is normal.  
+
+**Final grades**
+```{r}
+summary(joineddata$G3)
+hist(joineddata$G3, main = "Distribution of final grades", xlab = "Grade")
+``` 
+
+Distribution of final grades is normal.  
+
+Now it's time for graphical exploration:  
+
+**Hypothesis 1**: males consume more alcohol, than females.    
+```{r}
+g1 <- ggplot(data = joineddata, aes(x = alc_use, fill = sex))
+g1 + geom_bar() + facet_wrap("sex")
+``` 
+
+The bar plot shows that much more females consume alcohol than males, however, they mostly do it rare.  
+On the other hand, much less males consume alcohol, but if they do - they do it regularly.  
+```{r}
+g1 <- ggplot(data = joineddata, aes(x = high_use, fill = sex))
+g1 + geom_bar() + facet_wrap("sex")
+``` 
+
+This bar graph confirms the previous explanation, women don't consume much.  
+**Conclusion**: my hypothesis can be partly confirmed.  
+
+**Hypothesis 2**: greater first grade means less alcohol consumption for both genders.  
+```{r}
+g3 <- ggplot(joineddata, aes(x = high_use, y = G1, col = sex))
+g3 + geom_boxplot() 
+``` 
+
+There is no difference between girls whose consumption is high or low.  
+However, boys who consume more have lower grades.  
+**Conclusion**: my hypothesis can be partly confirmed (for boys).  
+
+**Hypothesis 3**: greater second grade means less alcohol consumption for both genders.  
+```{r}
+g4 <- ggplot(joineddata, aes(x = high_use, y = G2, col = sex))
+g4 + geom_boxplot() 
+``` 
+
+Visually there is almost no difference between girls, but it may change after removing an outlier.  
+Visually, boys who consume more have lower grades.  
+**Conclusion**: my hypothesis can be partly confirmed (for boys).  
+
+**Hypothesis 4**: greater final grade means less alcohol consumption for both genders.  
+```{r}
+g5 <- ggplot(joineddata, aes(x = high_use, y = G3, col = sex))
+g5 + geom_boxplot() 
+``` 
+
+There is no difference between girls, but it may change after removing an outlier.  
+Boys who consume more have lower grades, but may also change after removing an outlier.  
+**Conclusion**: not certain, needs statistical tests. 
+
+### **Logistic regression**  
+
+```{r}
+m <- glm(high_use ~ sex + G1 + G2 + G3, data = joineddata, family = "binomial")
+summary(m)
+```
+
+The model can be interpreted as follows:  
+1. Being a male increases the chance of high alcohol consumption by 0.88 (significant)  
+2. Each one-unit change in G1 will decrease the log odds of high alcohol consumption by -0.12 (not significant)  
+3. Each one-unit change in G2 will decrease the log odds of high alcohol consumption by -0.10 (not significant)  
+4. Each one-unit change in G3 will increase the log odds of high alcohol consumption by 0.00 (not significant)  
+
+Lets look at model's coefficients:
+```{r}
+coef(m)
+```
+
+And odds ratios:
+```{r}
+OR <- coef(m) %>% exp
+OR
+```
+
+And confidence intervals:
+```{r}
+CI <- confint(m) %>% exp
+CI
+```
+
+Now lets look at all them:
+```{r}
+cbind(OR, CI)
+```
+
+All the above can be interpreted as follows:  
+1. ORs for sex and G3 are more than 1, which means there is an association between sex and alcohol, and final grade and alcohol.  
+2. ORs for G1 and G2 are less than 1, which means no association between first or second grade and alcohol.  
+**Therefore, my 1st and 4th hypotheses are confirmed.**  
+
+### **Predictive power**  
+
+I am only using the "sex" and the "G3" now.  
+```{r}
+m <- glm(high_use ~ sex + G3, data = joineddata, family = "binomial")
+summary(m)
+```
+
+Both variables are significant.  
+
+```{r}
+probabilities <- predict(m, type = "response")
+joineddata <- mutate(joineddata, probability = probabilities)
+joineddata <- mutate(joineddata, prediction = probability > 0.5)
+select(joineddata, sex, G3, high_use, probability, prediction) %>% tail(10)
+```
+
+Now lets do 2x2 cross tabulation:
+```{r}
+table(high_use = joineddata$high_use, prediction = joineddata$prediction)
+```
+
+And graphic representation:
+```{r}
+g <- ggplot(joineddata, aes(x = probability, y = high_use, col = prediction))
+g + geom_point()
+```
+
+Now we can explore the training error:
+```{r}
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+loss_func(class = joineddata$high_use, prob = joineddata$probability)
+```
+
+Proportion of incorrect predictions (training error) is almost 30%.  
+
+If I compare this model's performance to my simple guessing strategy, the model worked out better.  
+
+### **BONUS: 10-fold cross-validation** 
+
+```{r}
+cv <- cv.glm(data = joineddata, cost = loss_func, glmfit = m, K = 10)
+cv$delta[1]
+```
+
+The prediction error is 0.30 - it's a bit worse than DataCamp's model error.
