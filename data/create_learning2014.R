@@ -1,6 +1,6 @@
 #Aleksandra Dobrego
 #November 8, 2019
-#It's an R Studio Exercise 2: Part 1 (Data Wrangling)
+#It's an R Studio Exercise 2: Data Wrangling
 
 install.packages("dplyr")
 library("dplyr")

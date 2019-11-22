@@ -1,6 +1,6 @@
 #Aleksandra Dobrego
 #November 13, 2019
-#It's an R Studio Exercise 3: Part 1 (Data Wrangling). Data here: https://github.com/dobrego/IODS-project/tree/master/data
+#It's an R Studio Exercise 3: Data Wrangling. 
 
 #all needed libraries
 library(dplyr)
