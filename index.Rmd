@@ -6,6 +6,7 @@ output:
     fig_caption: yes
     fig_height: 4
     fig_width: 6
+    fig_caption: yes
     theme: cosmo
     toc: yes
     toc_depth: 2
@@ -25,11 +26,18 @@ output:
 ```
 
 ***
+
 ```{r child = "chapter3.Rmd"}
 ```
  
 ***
+
 ```{r child = "chapter4.Rmd"}
+```
+
+***
+
+```{r child = "chapter5.Rmd"}
 ```
 
 ***

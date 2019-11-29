@@ -1,0 +1,117 @@
+# R Studio Exercise 5: Dimensionality reduction techniques
+
+*November 29, 2019*  
+*This week I performed the dimensionality reduction techniques on "human" data.*  
+
+### **Playing with the dataset**  
+
+**Loading** the "human" data: 
+```{r}
+library(MASS)
+human <- read.table("human.csv")
+str(human)
+summary(human)
+```
+It is a United Nations dataset for Human Development Index in different countries depending on such parameters as education, labour, life expectancy and others.  
+The dataset has **195 observations** (rows) and **19 variables** (columns).  
+
+Let's look at a graph:  
+```{r}
+pairs(human)
+```
+
+We can see scatterplots of the relationships of data’s variables.  
+We can see some U-shaped patterns and a lot of linear patterns that show that the variables are probably related. Making examples here would be exuberating, so lets proceed to look at statistics as it is. 
+
+### **Principal component analysis**  
+
+#### Non-standardized variables
+```{r}
+library(dplyr)
+library(stringr)
+human <- mutate(human, GNI = str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric)
+pca_human <- prcomp(human)
+```
+
+**Variability** captured by PCA:
+```{r}
+summary(pca_human)
+```
+
+Now let's draw **a biplot**:
+```{r }
+biplot(pca_human, xlab = pca_human$PC1, ylab = pca_human$PC2, main = "Non-standardized variables: GNI and others")
+```
+
+It looks pathetic. Lets try to scale the variables now.
+
+#### Standardized variables
+```{r}
+human_std <- scale(human)
+summary(human_std)
+pca_human_std <- prcomp(human_std)
+summary(pca_human_std)
+biplot(pca_human_std, col = c("grey40", "deeppink2"), xlab = pca_human_std$PC1, ylab = pca_human_std$PC2, main = "Standardized variables: emostly ducation and labour")
+``` 
+
+Looks much better! (We've also changed the color).  
+The scaling normalizes the range of variables, so it looks more neat.  
+
+### **Interpretations**  
+
+Based on a scaled bi-plot, here is what we see:  
+
+1. **The angle between features** represents high correlation between them.  
+- Expected years of schooling (Edu.Exp), Life expectancy at birth (Life.Exp), Proportion of females and males with at least secondary education (Edu2.FM) and Gross National Income per capita (GNI) are *highly positively correlated*.  
+- Percentage of female representatives in parliament (Parli.F) and Proportion of females and males in the labour force (Labo.FM) are also *highly positively correlated*. However, this correlation is smaller than (a) and (c).
+- Adolescent birth rate (Ado.Birth) and Maternal mortality ratio (Mat.Mor) are also *highly positively correlated*.  
+
+2. **The angle between the feature and the PC axis** represents correlation between the two. If PC and the feature arrow are "in parallel", it means, they are contributing to the same dimension.
+- Percentage of female representatives in parliament (Parli.F) and Proportion of females and males in the labour force (Labo.FM) contribute to the PC2.
+- All other features contribute to PC1.  
+
+### **Tea dataset** 
+
+```{r}
+library(FactoMineR)
+data("tea")
+str(tea)
+dim(tea)
+```
+
+Now lets select columns to do MCA:  
+```{r}
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+```
+
+**Time for MCA!**
+```{r}
+mca <- MCA(tea_time, graph = FALSE)
+summary(mca)
+```
+
+**Interpretation**:  
+
+The table contains the Eigenvalues, the Individuals, Categories and Categorical variables.  
+
+Let look at categorical variables: if the value is close to 1, then it means a strong link with the variable and dimension. We can see it here in "where" and "Dim2" and "Dim1". Also in "how" and "Dim1". 
+
+Now lets **draw an MCA variable biplot**:
+```{r}
+plot(mca, invisible=c("var"))
+```
+
+**Interpretation:**  
+
+Variables are shown here on the first two dimensions. We can look at possible variable patterns: the distances give measures of variables similarity: the closer - the better.  
+
+For me, the variable plot makes no sense, so I prefer to **draw an individuals plot**.  
+
+```{r}
+plot(mca, invisible=c("ind"))
+```
+
+Here, for example, "unpackaged" and "tea shop" are more similar, than "lemon" and "black".  
+
+
