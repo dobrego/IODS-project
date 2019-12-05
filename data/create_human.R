@@ -71,4 +71,5 @@ human <- human[1:155, ] #choosing everything until last 7 observations
 #row names as country names
 rownames(human) <- human$Country #now countries are rownames
 human <- dplyr::select(human, -Country) #removing the Country column
-write.table(human, file = "human.csv", row.names = TRUE)
+write.csv(human, file = "human.csv")
+read.csv("human.csv")

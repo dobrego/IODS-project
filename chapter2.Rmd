@@ -1,9 +1,11 @@
-# R Studio Exercise 2: Regression and model validation
+# Exercise 2: Regression and model validation
 
 *November 11, 2019*  
 *This week I have performed a data wrangling on a dataset, analyzed and interpreted my regression model and did some nice plots.*
 
-### **Looking at the dataset**  
+### {.tabset}
+
+#### **Looking at the dataset** 
 
 Reading a file and attaching the needed libraries (dplyr gives some little error but works fine):  
 ```{r}
@@ -24,7 +26,7 @@ dim(my_learning)
 ```
 The dataset has 166 observations and 7 variables. 
 
-### **Graphs**  
+#### **Graphs**  
 
 Attitude and Points coloured by gender:  
 ```{r}
@@ -88,7 +90,7 @@ ggpairs(my_learning, mapping = aes(col = gender, alpha = 0.3), lower = list(comb
 
 **Conclusion on variables**: correlation is actually very low for all variables, but the highest is for attitude&points.    
 
-### **Regression model**
+#### **Regression model**
 
 Now I do multiple regression model with attutude, strategic questions and deep learning questions; exam points is a dependent variable:  
 ```{r}
@@ -121,7 +123,7 @@ summary(model)
 Relationship between variables and the target: only changes in attitude affect the exam points.  
 **R = 0.2097, which means that only 20% of of the variance in the points can be explained by chosen variables.**
 
-### **Model plots**  
+#### **Model plots**  
 
 So our model is:  
 ```{r}

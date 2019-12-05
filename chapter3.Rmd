@@ -1,9 +1,11 @@
-# R Studio Exercise 3: Logistic regression
+# Exercise 3: Logistic regression
 
 *November 13, 2019*  
 *This week I have performed a data wrangling on a joined dataset and did logistic regression.*  
 
-### **Our dataset**  
+### {.tabset}
+
+#### **Our dataset**  
 
 Reading a file and attaching the needed libraries (dplyr gives some little error but works fine):  
 ```{r}
@@ -20,14 +22,14 @@ colnames(joineddata)
 This is data from two questionnaires related to student performance (including alcohol consumption).  
 The dataset consists of 382 observations (rows) and 35 variables (columns).  
 
-### **Lets hypothesise**  
+#### **Lets hypothesise**  
 
 1. Alcohol consumption and **gender** are related: males consume more alcohol, than females.
 2. Alcohol consumption and **first period grade** are related: greater first grade means less alcohol consumption for both genders.
 3. Alcohol consumption and **second period grade** are related: greater second grade means less alcohol consumption for both genders.
 4. Alcohol consumption and **third period grade** are related: greater third grade means less alcohol consumption for both genders.  
 
-### **Exploring the variables**  
+#### **Exploring the variables**  
 
 Before looking at variables, lets look at the alcohol consumption distribution:  
 ```{r}
@@ -117,7 +119,7 @@ There is no difference between girls, but it may change after removing an outlie
 Boys who consume more have lower grades, but may also change after removing an outlier.  
 **Conclusion**: not certain, needs statistical tests. 
 
-### **Logistic regression**  
+#### **Logistic regression**  
 
 ```{r}
 m <- glm(high_use ~ sex + G1 + G2 + G3, data = joineddata, family = "binomial")
@@ -157,7 +159,7 @@ All the above can be interpreted as follows:
 2. ORs for G1 and G2 are less than 1, which means no association between first or second grade and alcohol.  
 **Therefore, my 1st and 4th hypotheses are confirmed.**  
 
-### **Predictive power**  
+#### **Predictive power**  
 
 I am only using the "sex" and the "G3" now.  
 ```{r}
@@ -198,7 +200,7 @@ Proportion of incorrect predictions (training error) is almost 30%.
 
 If I compare this model's performance to my simple guessing strategy, the model worked out better.  
 
-### **BONUS: 10-fold cross-validation** 
+#### **BONUS: 10-fold cross-validation** 
 
 ```{r}
 cv <- cv.glm(data = joineddata, cost = loss_func, glmfit = m, K = 10)

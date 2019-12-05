@@ -44,5 +44,9 @@ str(rats)
 summary(BPRSL)
 summary(RATSL)
 
-
+#writing the files to the folder
+write.csv(RATSL, file = "RATSL.csv")
+write.csv(rats, file = "rats.csv")
+write.csv(BPRSL, file = "BPRSL.csv")
+write.csv(BPRS, file = "BPRS.csv")
 

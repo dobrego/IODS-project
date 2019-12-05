@@ -1,14 +1,16 @@
-# R Studio Exercise 5: Dimensionality reduction techniques
+# Exercise 5: Dimensionality reduction techniques
 
 *November 29, 2019*  
 *This week I performed the dimensionality reduction techniques on "human" data.*  
 
-### **Playing with the dataset**  
+### {.tabset}
+
+#### **Playing with the dataset**  
 
 **Loading** the "human" data: 
 ```{r}
 library(MASS)
-human <- read.table("human.csv")
+human <- read.csv("./data/human.csv", row.names = 1)
 str(human)
 summary(human)
 ```
@@ -23,7 +25,7 @@ pairs(human)
 We can see scatterplots of the relationships of data’s variables.  
 We can see some U-shaped patterns and a lot of linear patterns that show that the variables are probably related. Making examples here would be exuberating, so lets proceed to look at statistics as it is. 
 
-### **Principal component analysis**  
+#### **Principal component analysis**  
 
 #### Non-standardized variables
 ```{r}
@@ -51,13 +53,13 @@ human_std <- scale(human)
 summary(human_std)
 pca_human_std <- prcomp(human_std)
 summary(pca_human_std)
-biplot(pca_human_std, col = c("grey40", "deeppink2"), xlab = pca_human_std$PC1, ylab = pca_human_std$PC2, main = "Standardized variables: emostly ducation and labour")
+biplot(pca_human_std, col = c("grey40", "deeppink2"), xlab = pca_human_std$PC1, ylab = pca_human_std$PC2, main = "Standardized variables: mostly ducation and labour")
 ``` 
 
 Looks much better! (We've also changed the color).  
 The scaling normalizes the range of variables, so it looks more neat.  
 
-### **Interpretations**  
+**Interpretations**  
 
 Based on a scaled bi-plot, here is what we see:  
 
@@ -70,7 +72,7 @@ Based on a scaled bi-plot, here is what we see:
 - Percentage of female representatives in parliament (Parli.F) and Proportion of females and males in the labour force (Labo.FM) contribute to the PC2.
 - All other features contribute to PC1.  
 
-### **Tea dataset** 
+#### **Tea dataset** 
 
 ```{r}
 library(FactoMineR)

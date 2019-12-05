@@ -369,6 +369,8 @@ summary {
 <h1>R Studio Exercise 3: Logistic regression</h1>
 <p><em>November 13, 2019</em><br />
 <em>This week I have performed a data wrangling on a joined dataset and did logistic regression.</em></p>
+<div id="section" class="section level2 tabset">
+<h2></h2>
 <div id="our-dataset" class="section level3">
 <h3><strong>Our dataset</strong></h3>
 <p>Reading a file and attaching the needed libraries (dplyr gives some little error but works fine):</p>
@@ -608,8 +610,9 @@ loss_func(class = joineddata$high_use, prob = joineddata$probability)</code></pr
 <h3><strong>BONUS: 10-fold cross-validation</strong></h3>
 <pre class="r"><code>cv &lt;- cv.glm(data = joineddata, cost = loss_func, glmfit = m, K = 10)
 cv$delta[1]</code></pre>
-<pre><code>## [1] 0.3115183</code></pre>
+<pre><code>## [1] 0.3062827</code></pre>
 <p>The prediction error is 0.30 - it’s a bit worse than DataCamp’s model error.</p>
+</div>
 </div>
 </div>
 

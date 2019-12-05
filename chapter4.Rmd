@@ -1,9 +1,11 @@
-# R Studio Exercise 4: Clustering and classification
+# Exercise 4: Clustering and classification
 
 *November 22, 2019*  
 *This week I worked with Boston dataset.*  
 
-### **Playing with the dataset**  
+### {.tabset}
+
+#### **Playing with the dataset**  
 
 **Loading** the Boston data and exploring the structure and dimensions: 
 ```{r}
@@ -63,7 +65,7 @@ train <- boston_scaled[ind,] #train set
 test <- boston_scaled[-ind,] #test set
 ```
 
-### **Linear Discriminant Analysis**  
+#### **Linear Discriminant Analysis**  
 
 Lets **fit the LDA** on the train set:
 ```{r}
@@ -103,7 +105,7 @@ table(correct = correct_classes, predicted = lda.pred$class)
 
 I don't think the LDA model predicted the classes well. It made some major mistakes regarding med_low and med_high predictions.  
 
-### **K-means and other stuff**  
+#### **K-means and other stuff**  
 
 For a start:
 ```{r}
